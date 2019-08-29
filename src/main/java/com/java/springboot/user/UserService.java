@@ -10,43 +10,42 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.java.springboot.utils.UserUtils;
-
 @Service
 public class UserService implements UserDetailsService {
 
-    @Autowired
-    private UserRepository userRepository;
-    
-    @Autowired
-    PasswordEncoder passwordEncoder;
+	@Autowired
+	private UserRepository userRepository;
 
-    @Override
-    public UserDetails loadUserByUsername(String username) {
-    	// check user is exist or not in database
-        UserEntity userEntity = userRepository.findByUsername(username);
-        if (userEntity == null) {
-            throw new UsernameNotFoundException(username);
-        }
-        return new CustomUserDetails(UserUtils.toUserModel(userEntity));
-    }
+	@Autowired
+	PasswordEncoder passwordEncoder;
 
-    // JWTAuthenticationFilter will use this method
-    @Transactional
-    public UserDetails loadUserById(Long id) {
-        UserEntity userEntity = userRepository.findById(id).orElseThrow(
-                () -> new UsernameNotFoundException("User not found with id : " + id)
-        );
-
-        return new CustomUserDetails(UserUtils.toUserModel(userEntity));
-    }
-
-	public User saveUser(@Valid User user) {
-		UserEntity userEntity = UserUtils.toUserEntity(user);
-		userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
-		userRepository.save(userEntity);
-		return UserUtils.toUserModel(userRepository.findById(userEntity.getId()).get());
+	@Override
+	public UserDetails loadUserByUsername(String username) {
+		// check user is exist or not in database
+		User user = userRepository.findByUsername(username);
+		if (user == null) {
+			throw new UsernameNotFoundException("Bad credentials");
+		}
+		//return new CustomUserDetails(UserUtils.toUserModel(userEntity));
+		return new CustomUserDetails(user);
 	}
 
+	// JWTAuthenticationFilter will use this method
+	@Transactional
+	public UserDetails loadUserById(Long id) {
+		User user = userRepository.findById(id)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found with id : " + id));
+
+		//return new CustomUserDetails(UserUtils.toUserModel(userEntity));
+		return new CustomUserDetails(user);
+	}
+
+	public User saveUser(@Valid User user) {
+//		UserEntity userEntity = UserUtils.toUserEntity(user);
+//		userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
+//		userRepository.save(userEntity);
+//		return UserUtils.toUserModel(userRepository.findById(userEntity.getId()).get());
+		return null;
+	}
 
 }

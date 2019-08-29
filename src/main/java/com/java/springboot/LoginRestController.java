@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,40 +26,42 @@ import com.java.springboot.user.UserService;
 @RequestMapping("/api")
 public class LoginRestController {
 
-    @Autowired
-    AuthenticationManager authenticationManager;
+	@Autowired
+	AuthenticationProvider authenticationProvider;
 
-    @Autowired
-    private JwtTokenProvider tokenProvider;
-    
-    @Autowired
-    private UserService userService ;
-    
-    @PostMapping("/users")
-    public User createUser(@Valid @RequestBody User user) {
-    	return userService.saveUser(user);
-    }
+	@Autowired
+	private JwtTokenProvider tokenProvider;
 
-    @PostMapping("/login")
-    public LoginResponse authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+	@Autowired
+	private UserService userService;
 
-    	// Authenticate from user,pass
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsername(),
-                        loginRequest.getPassword()
-                )
-        );
-        // if no exception, set Authorization info into Security Context
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        // return jwt for user
-        String jwt = tokenProvider.generateToken((CustomUserDetails) authentication.getPrincipal());
-        return new LoginResponse(jwt);
-    }
+	@PostMapping("/users")
+	public User createUser(@Valid @RequestBody User user) {
+		return userService.saveUser(user);
+	}
 
-    @GetMapping("/random")
-    public RandomStuff randomStuff(){
-        return new RandomStuff("If jwt is valid. This message will be showed.");
-    }
+	@PostMapping("/login")
+	public LoginResponse authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+
+		// Authenticate from user,pass
+		Authentication authentication = null;
+		try {
+			authentication = authenticationProvider.authenticate(
+					new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		
+		// if no exception, set Authorization info into Security Context
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		// return jwt for user
+		String jwt = tokenProvider.generateToken((CustomUserDetails)authentication.getPrincipal());
+		return new LoginResponse(jwt);
+	}
+
+	@GetMapping("/random")
+	public RandomStuff randomStuff() {
+		return new RandomStuff("If jwt is valid. This message will be showed.");
+	}
 
 }

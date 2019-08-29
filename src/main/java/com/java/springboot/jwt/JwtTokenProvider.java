@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import com.java.springboot.user.CustomUserDetails;
-
+/*
+ * Encrypt user info to creaet JWT
+ */
 @Component
 @Slf4j
 public class JwtTokenProvider {
@@ -18,13 +20,16 @@ public class JwtTokenProvider {
 		Date now = new Date();
 		Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
 		// Create jwt from user id
-		return Jwts.builder().setSubject(Long.toString(userDetails.getUser().getId())).setIssuedAt(now)
-				.setExpiration(expiryDate).signWith(SignatureAlgorithm.HS512, JWT_SECRET).compact();
+		return Jwts.builder()
+				.setSubject(Long.toString(userDetails.getUser().getId()))
+				.setIssuedAt(now)
+				.setExpiration(expiryDate)
+				.signWith(SignatureAlgorithm.HS512, JWT_SECRET)
+				.compact();
 	}
 
 	public Long getUserIdFromJWT(String token) {
 		Claims claims = Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token).getBody();
-
 		return Long.parseLong(claims.getSubject());
 	}
 
