@@ -7,7 +7,7 @@ import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import com.java.springboot.user.CustomUserDetails;
 /*
- * Encrypt user info to creaet JWT
+ * Encrypt user info to create JWT
  */
 @Component
 @Slf4j

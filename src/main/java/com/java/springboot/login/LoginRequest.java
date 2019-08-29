@@ -1,4 +1,4 @@
-package com.java.springboot.payload;
+package com.java.springboot.login;
 
 import javax.validation.constraints.NotBlank;
 

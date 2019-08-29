@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.java.springboot.utils.UserUtils;
+
 @Service
 public class UserService implements UserDetailsService {
 
@@ -22,30 +24,27 @@ public class UserService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) {
 		// check user is exist or not in database
-		User user = userRepository.findByUsername(username);
-		if (user == null) {
+		UserEntity userEntity = userRepository.findByUsername(username);
+		if (userEntity == null) {
 			throw new UsernameNotFoundException("Bad credentials");
 		}
-		//return new CustomUserDetails(UserUtils.toUserModel(userEntity));
-		return new CustomUserDetails(user);
+		return new CustomUserDetails(UserUtils.toUserModel(userEntity));
 	}
 
 	// JWTAuthenticationFilter will use this method
 	@Transactional
 	public UserDetails loadUserById(Long id) {
-		User user = userRepository.findById(id)
+		UserEntity userEntity = userRepository.findById(id)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found with id : " + id));
 
-		//return new CustomUserDetails(UserUtils.toUserModel(userEntity));
-		return new CustomUserDetails(user);
+		return new CustomUserDetails(UserUtils.toUserModel(userEntity));
 	}
 
 	public User saveUser(@Valid User user) {
-//		UserEntity userEntity = UserUtils.toUserEntity(user);
-//		userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
-//		userRepository.save(userEntity);
-//		return UserUtils.toUserModel(userRepository.findById(userEntity.getId()).get());
-		return null;
+		UserEntity userEntity = UserUtils.toUserEntity(user);
+		userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
+		userRepository.save(userEntity);
+		return UserUtils.toUserModel(userRepository.findById(userEntity.getId()).get());
 	}
 
 }

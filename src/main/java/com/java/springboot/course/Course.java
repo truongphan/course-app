@@ -1,20 +1,19 @@
-package com.java.springboot.user;
+package com.java.springboot.course;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Data
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
-    private Long id;
-    private String username;
-    private String password;
+@Builder
+public class Course {
+	
+	private Long id;
+	private String name;
+	private String description;
 }

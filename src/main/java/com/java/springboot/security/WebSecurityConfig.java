@@ -1,4 +1,4 @@
-package com.java.springboot;
+package com.java.springboot.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -44,17 +44,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		//auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
 		auth.authenticationProvider(authProvider);
 	}
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.cors().and().csrf().disable().authorizeRequests().antMatchers("/api/login").permitAll() // Cho phép tất cả
-																										// mọi người
-																										// truy cập vào
-																										// 2 địa chỉ này
-				.anyRequest().authenticated(); // Tất cả các request khác đều cần phải xác thực mới được truy cập
+		http.cors().and().csrf().disable().authorizeRequests().antMatchers("/api/login").permitAll()
+				.anyRequest().authenticated(); 
 
 		// Add one more filter to check jwt
 		http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
