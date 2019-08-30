@@ -1,4 +1,4 @@
-package com.java.springboot.security;
+package com.java.springboot.config;
 
 import java.util.ArrayList;
 import java.util.List;
