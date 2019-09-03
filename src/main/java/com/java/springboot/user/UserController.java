@@ -7,14 +7,13 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.java.springboot.filter.JwtTokenProvider;
 import com.java.springboot.login.LoginRequest;
 import com.java.springboot.login.LoginResponse;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -32,6 +31,11 @@ public class UserController {
 	@PostMapping("/users")
 	public User createUser(@Valid @RequestBody User user) {
 		return userService.saveUser(user);
+	}
+
+	@GetMapping("/users")
+	public List<User> getAllUsers() {
+		return userService.getAllUsers();
 	}
 
 	@PostMapping("/login")

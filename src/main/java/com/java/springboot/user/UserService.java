@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 import com.java.springboot.utils.UserUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class UserService implements UserDetailsService {
 
@@ -47,4 +50,10 @@ public class UserService implements UserDetailsService {
 		return UserUtils.toUserModel(userRepository.findById(userEntity.getId()).get());
 	}
 
+    public List<User> getAllUsers() {
+		List<User> userList = new ArrayList<>();
+		List<UserEntity> entities = userRepository.findAll();
+		entities.forEach(e -> userList.add(UserUtils.toUserModel(e)));
+		return userList;
+    }
 }
